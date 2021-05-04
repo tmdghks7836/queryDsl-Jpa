@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 import study.querydsl.dto.MemberSearchCondition;
 import study.querydsl.dto.MemberTeamDto;
@@ -91,6 +92,8 @@ public class MemberJpaRepository {
     }
 
     public List<MemberTeamDto> search(MemberSearchCondition condition) {
+
+        QuerydslRepositorySupport querydslRepositorySupport;
         return queryFactory
                 .select(new QMemberTeamDto(
                         member.id.as("memberId"),
@@ -101,9 +104,9 @@ public class MemberJpaRepository {
                 .from(member)
                 .leftJoin(member.team, team)
                 .where(usernameEq(condition.getUsername()),
-                        teamNameEq(condition.getUsername()),
+                        teamNameEq(condition.getTeamName()),
                         ageGoe(condition.getAgeGoe()),
-                        ageLoe(condition.getAgeGoe()))
+                        ageLoe(condition.getAgeLoe()))
                 .fetch();
     }
 
@@ -122,7 +125,7 @@ public class MemberJpaRepository {
     }
 
     private BooleanExpression ageLoe(Integer ageLoe) {
-        return ageLoe != null ? member.age.goe(ageLoe) : null;
+        return ageLoe != null ? member.age.loe(ageLoe) : null;
     }
 
     private BooleanExpression ageGoe(Integer ageGoe) {
