@@ -1,0 +1,9 @@
+	String target = "https://www.naver.com/";
+		HttpURLConnection con = (HttpURLConnection) new URL(target).openConnection();
+		BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+		String temp;
+		while((temp = br.readLine()) != null){
+			System.out.println(temp );
+		}
+		con.disconnect();
+		br.close();
